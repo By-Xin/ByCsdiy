@@ -19,12 +19,15 @@
 
 
 
+## Boolean Values
 
-## TRUE or FALSE in python
+### TRUE or FALSE in python
 
 - In python, those negative integers also mean TRUE if not specifially defined. (which is different from the basic settings in the lecture of DataStructure)
 
-- Please remember that only those '0's will represent FALSE. 
+- Those represent *FALSE*: `0`, `None`,`False`
+
+  - *Please also note that the spelling of `False`, ( rather than `FALSE` in R )*
 
 - Example:
 
@@ -42,3 +45,26 @@
   -9
   -6
   '''
+  ```
+
+### Boolean Operations
+
+```python
+>>> True and False
+False
+>>> True or False
+True
+>>> not False
+True
+```
+
+- To evaluate the expression `<left> and <right>`:
+  1. If `<left>` *FALSE* then *FALSE*
+  2. Else `<right>` 
+
+
+- To evaluate the expression `<left> or <right>`:
+  1. If `<left>` *TRUE* then *TRUE*
+  2. Else `<right>`
+
+Functions that perform comparisons and return boolean values typically begin with `is`, not followed by an underscore (e.g., `isfinite`, `isdigit`, `isinstance`, etc.).

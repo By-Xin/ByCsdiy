@@ -5,7 +5,7 @@
 HELLO!
 
 ------
-_**Shortcut To**:_ [分布式计算复习笔记](https://github.com/By-Xin/ByCsdiy/blob/c76742ab0df23de92ae494049b0a9851cd2a7b97/ds2023s/Notes/Final%20Revision.ipynb) 🖊
+Check : [My Personal Website](https://by-xin.github.io/)
 
 ------
 

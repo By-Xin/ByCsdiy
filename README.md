@@ -5,7 +5,11 @@
 HELLO!
 
 ------
-Check : [My Personal Website](https://by-xin.github.io/)
+
+**_You can't miss: [My Personal Website](https://by-xin.github.io/)_**
+
+**_You are also welcomed to view this [Discussions](https://github.com/By-Xin/ByCsdiy/discussions) Section - and pay specially attention to "See How I've Solved This" Sector~_**
+
 
 ------
 

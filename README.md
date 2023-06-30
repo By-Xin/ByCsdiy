@@ -8,7 +8,9 @@ HELLO!
 
 **_You can't miss: [My Personal Website](https://by-xin.github.io/)_**
 
-**_You are also welcomed to view this [Discussions](https://github.com/By-Xin/ByCsdiy/discussions) Section - and pay specially attention to "See How I've Solved This" Sector~_**
+**_You are also welcomed to view this [Csdiy Discussions](https://github.com/By-Xin/ByCsdiy/discussions) Section - and pay specially attention to "See How I've Solved This" Sector~_**
+
+**_Here are something fun about SUFE-rep's Wiki. Come and check [STATDIY](https://github.com/By-Xin/Sufe/wiki/STATDIY)_**
 
 
 ------

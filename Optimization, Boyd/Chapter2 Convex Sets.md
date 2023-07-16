@@ -3,7 +3,9 @@
 ## 2.1 Affine and Convex Sets
 
 ### Affine Sets 仿射集
+
 - 定义1：一个集合是仿射集，若$\forall x_1 , x_2 \in c $， 则连接 $x_1 , x_2 $ 的直线也在这个集合内
+
 - 定义2: 设$x_1 \cdots x_k \in c , \theta_1 , \ldots , \theta_k \in R , \sum \theta_i = 1$；对于一个仿射集，从中任意选择$k$个点构成的仿射组合$\theta_1 x_1 + \cdots + \theta_k x_k \in c$也成立
 - 事实上，这两个定义是等价的
   - $[p.f]~def_1 \Rightarrow def_2$ 
@@ -49,3 +51,38 @@ $$\forall x_1 , x_2 \in C, \theta \in [0,1], \theta x_1 + (1-\theta)x_2 \in C$$
   - *凸锥一定经过原点*
 - 类似定义**凸锥组合**：$\theta_1 x_1 + \cdots + \theta_k x_k \in C, \theta_i \ge 0$
 - 类似定义**凸锥包**：$ \{\theta_1 x_1 + \cdots + \theta_k x_k | x_1 \cdots x_k \in C, \theta_i \ge 0\}$
+
+## 2.2 几种重要的凸集
+
+1. $\R^n$ 空间
+2. $\R^n$ 空间的子空间
+3. 任意直线
+4. 任意线段
+5. $\{x_0+\theta v | \theta \ge 0\}, x_0 \in \R^n, v \in \R^n$
+6. ...
+
+### Hyperplane 超平面 与 Halfspaces 半空间
+
+- Hyperplane def：$H = \{x | a^Tx = b\}, a \ne 0$
+  - 一个超平面一定是一个仿射集，但是不一定是一个凸锥（i.i.f.超平面经过原点）
+- Halfspaces def：$H = \{x | a^Tx \le b\}, a \ne 0$ 
+  - 粗略地看，超平面将一个空间分割成了两个半空间
+  - 半空间是一个凸集，但不是一个仿射集，不一定是一个凸锥（i.i.f.半空间包含原点）
+
+### Euclidean balls 与 Ellipsoids 欧氏空间的球与椭球
+
+- Euclidean Balls def: $B = \{x ~|~ \|x-x_c\|_2 \le r\}$
+  - 一个欧氏球是一个凸集，但不是一个仿射集，不是一个凸锥（除非退化成原点）
+
+  *p.f. Euclidean Balls is a Convex Set*:
+    - $\forall x_1 , x_2 \in B \Rightarrow ||x_1 - x_c||_2 \le r, ||x_2 - x_c||_2 \le r$
+    - p.f. Convex Set $ \Leftrightarrow \forall \theta \in [0,1], ||\theta x_1 + (1-\theta)x_2 - x_c||_2 \le r$
+    - $$ LHS \equiv ||\theta (x_1 - x_c)+(1-\theta)(x_2 - x_c)||_2 \\ \le ||\theta (x_1 - x_c)||_2 + ||(1-\theta)(x_2 - x_c)||_2 (三角不等式) \\ \le \theta r + (1-\theta)r = r$$ 
+
+- Ellipsoids def: $ \Epsilon(x_c, P) = \{x ~|~ (x-x_c)^TP^{-1}(x-x_c) \le 1\}$
+  - 其中$P \in \S_{++}^n$，即P是一个n阶对称正定矩阵
+    - 正定矩阵def：奇异值均大于0
+      - 奇异值def：$A$的奇异值是$A^TA$的特征值的平方根
+    - 事实上，P的每个奇异值描述了这个椭球的一个半轴长
+
+

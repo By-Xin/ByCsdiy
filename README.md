@@ -75,6 +75,7 @@ Join the [discussions](https://github.com/By-Xin/Sufe/discussions/6) to give you
 
 📖\[Books]: Natural Language Processing with Transformers - Building Language Applications with Hugging Face (Lewis Tunstall, et al.)
 
+📺\[Vedios]: [手把手带你实战HuggingFace Transformers-入门篇](https://space.bilibili.com/21060026/channel/collectiondetail?sid=1357748)
 
 ### Database
 

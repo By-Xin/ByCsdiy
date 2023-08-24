@@ -49,6 +49,8 @@ Join the [discussions](https://github.com/By-Xin/Sufe/discussions/6) to give you
 
 🖊️\[Lecture Notes]: [Statistical Methods for Machine Learning](https://www.stat.cmu.edu/~larry/=sml/) (CMU)
 
+📺\[Videos]: [18.065:Linear Algebra and Learning from Data, Gilbert Strang](https://www.bilibili.com/video/BV1Tu411r7mZ?p=3&vd_source=8a00dab0be94d29388f2286892ba8d50)
+
 📖\[Books]: [Elements of Statistical Learning](https://hastie.su.domains/ElemStatLearn/)
 
 📺\[Videos]: [现代数字信号处理_张颢](https://www.bilibili.com/video/BV19P4y1L7Ku/?spm_id_from=333.337.search-card.all.click&vd_source=8a00dab0be94d29388f2286892ba8d50) (Machine Learning from Singal Processing Prospect)

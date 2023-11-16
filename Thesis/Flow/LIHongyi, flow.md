@@ -258,3 +258,48 @@ $$
 
 ![](https://michael-1313341240.cos.ap-shanghai.myqcloud.com/202311160058950.png)
 
+- In stacking part, we may find that a simple copy-and-paste strategy is not appliable, as it will cause the fact that the first half of $x$ will be the direct copy of the original input $z$, which is the Gaussian noise.
+
+- To solve this problem, as is shown in the figure above, we choose to copy and paste different parts of $z$ to different parts of $x$ in a flow - not sticking to the first half of $x$ in all layers.
+  - Specifically, for image generation, we can either chose to split the image *by pixels*, or *by channels*.
+
+
+### GLOW
+
+***1$\times$1 Convolution***
+
+![](https://michael-1313341240.cos.ap-shanghai.myqcloud.com/202311160812627.png)
+
+Here we introduce a shuffle matrix $W\in\mathbb R^{3\times3}$. We take out each pixcel of input $z$ for all layers, and then multiply it with $W$ to get the output $x$.
+For example, assume that 
+$$
+W = \begin{bmatrix}
+0 & 0 & 1\\
+1 & 0 & 0\\
+0 & 1 & 0
+\end{bmatrix}
+$$
+and
+$$
+z_1 = \begin{bmatrix}
+1 \\2\\3 
+\end{bmatrix}
+$$
+then
+$$
+x_1 = Wz_1 =  \begin{bmatrix}
+3 \\1\\2
+\end{bmatrix}.
+$$
+
+Here, we can see that with matrix $W$ shuffling, we can directly copy and paste the first half of the splited input in FLOW. And now $W$ will work as a *learnable* matrix, which can be trained to get a better shuffle.
+
+As $W$ is actually a $G$ function, thus if $W$ is invertible, then we can get $W^{-1}$.
+
+As for the determinant of Jacobian matrix, we can see that, for $x = f(z) = Wz$,$J_f = W$. Thus the Jacobian matrix for GLOW is:
+![](https://michael-1313341240.cos.ap-shanghai.myqcloud.com/202311160829565.png)
+
+THUS, we can see that the determinant of Jacobian matrix is:
+$$
+\det J_f = (\det W)^{d\times d}
+$$

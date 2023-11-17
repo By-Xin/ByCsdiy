@@ -73,9 +73,9 @@ Plus, we want our optimization being able to:
 
 - work with large datasets
 - $p_\theta$ is as close as possible to $p_{data}$
-- generalize 
+- be generalizable to new data
 
-### Estimation Criteria
+### Estimation 
 
 ***Maximum Likelihood Estimation***
 $$
@@ -83,7 +83,7 @@ $$
 $$
 
 
-***KL Divergence***
+***KL Divergence Estimation***
 
 It is equivalent to *minimizing KL divergence* between *Empirical Data* distribution and *Model* distribution:
 
@@ -91,3 +91,15 @@ $$ \hat p_{data}(x) = \frac1n\sum_{i=1}^n \bold{1}\{x^{(i)} = x\}$$
 $$ KL(\hat p_{data}||p_\theta) = \mathbb{E}_{x \sim \hat p_{data}} \left[ -\log p_\theta(x) \right] - H(\hat p_{data})$$
 
 where $H(\hat p_{data})$ is the entropy of $\hat p_{data}$, which is a constant.
+
+***Stochastic Gradient Descent***
+
+### Model Designing
+
+Recall that we want to model $p_\theta(x)$, where $x$ is a vector of discrete values, and $p_\theta$ is a probability distribution over $x$. Therefore, we should ensure that 
+$$ \text{ for all } \theta:\begin{cases}
+p_\theta(x) \geq 0 \\
+\sum_{x} p_\theta(x) = 1
+\end{cases}
+\forall x
+$$

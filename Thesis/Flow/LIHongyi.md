@@ -1,4 +1,4 @@
-# LIHongyi - Generative Model
+# LIHongyi - VAE & Generative Model
 https://openai.com/blog/generative
 
 ## PixelRNN

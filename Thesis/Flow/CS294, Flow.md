@@ -1,6 +1,6 @@
 # FLOW
 
-## Foundations of FLOWs
+## Foundations of FLOWs (1-D)
 
 ### How to fit a density model
 
@@ -117,3 +117,44 @@ x \stackrel{\textit{Flow}}{\longrightarrow} u \stackrel{\textit{Flow}}{\longrigh
 $$ as the *inverse of FLOW is also a FLOW*.
 
 Thus, we can **turn any (smooth) $p(x)$ into any (smooth) $p(z)$**.
+
+## N-D FLOWs
+
+### 2D Autorregressive Flow
+
+$$
+x_1 \rightarrow z_1  = f_\theta(x_1) \\
+x_2 \rightarrow z_2  = f_\theta(x_1,x_2)
+$$
+
+### Higer Dimension Flows
+
+#### Autoregressive Flows and Inverse Autoregressive Flows
+
+***Autoregressive Flow (Bayes Net)***
+$$
+x_1 \sim p_\theta(x_1) \quad x_1 = f_\theta^{-1}(z_1)
+\\ x_2 \sim p_\theta(x_2|x_1) \quad x_2 = f_\theta^{-1}(z_2; x_1)
+\\ x_3 \sim p_\theta(x_3|x_1,x_2) \quad x_3 = f_\theta^{-1}(z_3; x_1, x_2)
+\\ \cdots
+$$
+
+Sampling is an invertible mapping from $z$ to $x$
+
+***Training for Autoregressive Flow***
+
+- Map $x$ to $z$
+- Fully parallelizable
+
+$$
+p_\theta(x) = p(f_\theta(x))\left| \det \frac{\partial f_\theta(x)}{\partial x}\right|
+$$
+
+But this sampling is very slow.  hb
+
+#### RealNVP architectures
+
+#### Glow, Flow++, FFJORD
+
+
+

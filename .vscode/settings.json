@@ -1,3 +1,11 @@
 {
-    "r.lsp.promptToInstall": false
+    "r.lsp.promptToInstall": false,
+    "cSpell.words": [
+        "arange",
+        "logsoftmax",
+        "lossfn",
+        "minibatch",
+        "optim",
+        "Softmax"
+    ]
 }

@@ -73,6 +73,10 @@ Join the [discussions](https://github.com/By-Xin/Sufe/discussions/6) to give you
 
 👩‍💻\[Uploaders]: [DASOU讲AI](https://space.bilibili.com/414678948?spm_id_from=333.337.0.0)
 
+💻\[Website]: [Stanford CS231n: Convolutional Neural Networks for Visual Recognition](https://cs231n.stanford.edu/), Stanford
+
+💻\[Website]: [UCB CS294: Deep Reinforcement Learning](https://rail.eecs.berkeley.edu/deeprlcourse-fa17/index.html), UCB
+
 #### NLP
 
 📖\[Books]: Natural Language Processing with Transformers - Building Language Applications with Hugging Face (Lewis Tunstall, et al.)

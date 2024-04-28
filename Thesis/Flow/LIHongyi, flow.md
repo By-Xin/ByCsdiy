@@ -204,7 +204,7 @@ The following content will show us how to calculate specifically.
 #### Coupling Layer
 
 ***Design of Coupling Layer***
-  
+
   Assume that we have input vector $z = (z_1, ..., z_D)'$ and output vector $x = (x_1, ..., x_D)'$. 
 
   We can split them into two parts, $z_a := (z_1,...,z_d), z_b:=(z_{d+1},...,z_D)$, and $x_a := (x_1,...,x_d), x_b:=(x_{d+1},...,x_D)$.
@@ -231,7 +231,8 @@ $$
 \arg\max_G \log p_G(x^{(i)}) = \arg\max_G\left(\log \pi(G^{-1}(x^{(i)})) + \log \left|\det\left(J_{G^{-1}}\right)\right|\right).
 $$
 
-**For the first part** $\log \pi(G^{-1}(x^{(i)}))$, coupling method allows us to calculate $G^{-1}(x^{(i)})$ easily. From the structure of coupling layer, we can see that:
+###### **For the first part** $\log \pi(G^{-1}(x^{(i)}))$, coupling method allows us to calculate $G^{-1}(x^{(i)})$ easily. From the structure of coupling layer, we can see that:
+
 $$z_{i\le d} = x_i $$ $$ z_{i>d} = \frac{x_i - \mathcal{H}(x_a)}{\mathcal{F}(x_a)} = \frac{x_i - \gamma_i}{\beta_i}$$
 
 **For the second part** $\log \left|\det\left(J_{G^{-1}}\right)\right|$, we have to focus on the Jacobian matrix $J_G$. Similarly, we can split $J_G$ into four parts:
@@ -249,6 +250,7 @@ where $J_{aa}$ is the Jacobian matrix of $x_a$ w.r.t. $z_a$, $J_{ab}$ is the Jac
 - $J_{bb}$ is the most important part. Actually it is a diagonal matrix.
   - $\left(x_{d+1},...,x_D\right)' = \left(z_{d+1},...,z_D\right)' \odot \left(\beta_{d+1},..., \beta_D\right)' + \left(\gamma_{d+1},..., \gamma_D\right)' \Leftrightarrow x_{i>d} = \beta_iz_{i>d}+\gamma_i$, which shows that only in the diagonal part of $J_{bb}$, the value is non-zero.
   
+
 To sum up, the overall determinant of $J_G$ is:
 $$
 \det J_G = \frac{\partial x_{d+1}}{\partial z_{d+1}} \frac{\partial x_{d+2}}{\partial z_{d+2}} \dots \frac{\partial x_{D}}{\partial z_{D}} = \beta_{d+1}\beta_{d+2}\dots\beta_D

@@ -111,10 +111,12 @@ $$
 x \stackrel{\textit{Flow}}{\longrightarrow} u
 \\
 z \stackrel{\textit{Flow}}{\longrightarrow} u
-$$then we can transform $x$ into $z$ via:
+$$
+then we can transform $x$ into $z$ via:
 $$
 x \stackrel{\textit{Flow}}{\longrightarrow} u \stackrel{\textit{Flow}}{\longrightarrow} z
-$$ as the *inverse of FLOW is also a FLOW*.
+$$
+as the *inverse of FLOW is also a FLOW*.
 
 Thus, we can **turn any (smooth) $p(x)$ into any (smooth) $p(z)$**.
 
@@ -127,7 +129,7 @@ x_1 \rightarrow z_1  = f_\theta(x_1) \\
 x_2 \rightarrow z_2  = f_\theta(x_1,x_2)
 $$
 
-### Higer Dimension Flows
+### Higher Dimension Flows
 
 #### Autoregressive Flows and Inverse Autoregressive Flows
 

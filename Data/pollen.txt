@@ -1,0 +1,13 @@
+Depth Sample Count
+S A 12
+S A 14
+S B 10
+S B 7
+M A 16
+M A 12
+M B 10
+M B 19
+D A 21
+D A 29
+D B 33
+D B 30

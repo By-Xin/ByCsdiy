@@ -3,16 +3,19 @@
 ## 1. General Linear Process
 
 ***Definition*** *(General linear process):*
+
 $$
 Y_t =  \sum _{j=0}^{\infty} \psi_j \epsilon_{t-j}.
-$$ where $\epsilon_t$ is a white noise process with mean 0 and variance $\sigma^2$. To ensure the sum converges, we require that $\sum_{j=0}^{\infty} \psi_j^2 < \infty$.
+$$ 
+where $\epsilon_t$ is a white noise process with mean 0 and variance $\sigma^2$. To ensure the sum converges, we require that $\sum_{j=0}^{\infty} \psi_j^2 < \infty$.
 
 For GLM, an special case is expontential decay.
 
 ***Definition*** *(Expontential decay):*
 $$
 Y_t = \sum _{j=0}^{\infty} \phi ^j \epsilon_{t-j}.
-$$ where $|\phi| < 1$.
+$$ 
+where $|\phi| < 1$.
 
 In this case, we have:
 >$$
@@ -35,7 +38,8 @@ $$
 ***Definition*** *(Moving average process):*
 $$
 Y_t = \epsilon_t - \theta_1 \epsilon_{t-1} - \theta_2 \epsilon_{t-2} - \cdots - \theta_q \epsilon_{t-q}.
-$$ where $\epsilon_t$ is a white noise process with mean 0 and variance $\sigma^2$.
+$$ 
+where $\epsilon_t$ is a white noise process with mean 0 and variance $\sigma^2$.
 
 ### 2.1 MA(1) Process
 
@@ -103,7 +107,8 @@ $$
 And MA(q) process can be written as:
 $$
 Y_t = \theta(B) \epsilon_t = (1 - \theta_1 B - \theta_2 B^2 - \cdots - \theta_q B^q) \epsilon_t.
-$$ where $ B $ is the backshift operator.
+$$ 
+where $ B $ is the backshift operator.
 
 ## 3. Autoregressive Process
 
@@ -111,7 +116,8 @@ $$ where $ B $ is the backshift operator.
 
 $$
 Y_t = \phi_1 Y_{t-1} + \phi_2 Y_{t-2} + \cdots + \phi_p Y_{t-p} + \epsilon_t.
-$$ where $\epsilon_t$ is a white noise process with mean 0 and variance $\sigma^2$, and is independent of historical information: $\epsilon_t \perp Y_{t-1}, Y_{t-2}, \cdots, Y_{t-p}$.
+$$ 
+where $\epsilon_t$ is a white noise process with mean 0 and variance $\sigma^2$, and is independent of historical information: $\epsilon_t \perp Y_{t-1}, Y_{t-2}, \cdots, Y_{t-p}$.
 
 Its characteristic polynomial is:
 $$
@@ -120,7 +126,8 @@ $$
 And the AR(p) process can be written as:
 $$
 \phi(B)Y_t = \epsilon_t.
-$$ where $ B $ is the backshift operator.
+$$ 
+where $B$ is the backshift operator.
 
 ***Stationarity***:
 
@@ -129,7 +136,8 @@ MA(q) process is always stationary, but AR(p) process is not always stationary. 
 If AR(p) process is stationary, then it has a ***unique stationary solution*** (i.e. a unique set of $\psi$'s in the following equation), with the form of ***MA(∞)***:
 $$
 Y_t = \psi_0 \epsilon_t + \psi_1 \epsilon_{t-1} + \cdots = \sum_{j=0}^{\infty} \psi_j \epsilon_{t-j}.
-$$ where $|\phi| < 1$.
+$$ 
+where $|\phi| < 1$.
 
 *Solving AR(p) process is to find the coefficients $\psi$ in the MA(∞) representation.*
 
@@ -152,22 +160,23 @@ $$
     Here, we have an extra condition that $|\phi| < 1$.
 
 - Then, calculate the **covariance** by duplicating $Y_{t-k}$ on both sides of $†$ and taking expectation:
-$$
-\begin{aligned}
-\mathbb{E}(Y_t Y_{t-k}) &= \phi \mathbb{E}(Y_{t-1} Y_{t-k}) + \mathbb{E}(\epsilon_t Y_{t-k}), \\
-\end{aligned}
-$$ adding that $\mathbb{E}(ϵ_t Y_{t-k}) = 0$, thus:
-$$
-\begin{aligned}
-\gamma_k = \phi \gamma_{k-1}.
-\end{aligned}
-$$
-Recursively, we have:
-$$
-\begin{aligned}
-\gamma_k = \phi^k \gamma_0 =  \phi^k\frac{\sigma^2}{1-\phi^2}.
-\end{aligned}
-$$
+    $$
+    \begin{aligned}
+    \mathbb{E}(Y_t Y_{t-k}) &= \phi \mathbb{E}(Y_{t-1} Y_{t-k}) + \mathbb{E}(\epsilon_t Y_{t-k}), \\
+    \end{aligned}
+    $$ 
+    adding that $\mathbb{E}(ϵ_t Y_{t-k}) = 0$, thus:
+    $$
+    \begin{aligned}
+    \gamma_k = \phi \gamma_{k-1}.
+    \end{aligned}
+    $$
+    Recursively, we have:
+    $$
+    \begin{aligned}
+    \gamma_k = \phi^k \gamma_0 =  \phi^k\frac{\sigma^2}{1-\phi^2}.
+    \end{aligned}
+    $$
 
 - Finally, calculate the **correlation**:
 $$
@@ -193,7 +202,8 @@ $$
 For AR(1) process, we can have an infinite MA representation:
 $$
 Y_t = \sum_{j=0}^{\infty} \phi^j \epsilon_{t-j}.
-$$ where $|\phi| < 1$.
+$$ 
+where $|\phi| < 1$.
 
 #### Stationarity of AR(1) Process
 
@@ -208,7 +218,8 @@ $$
 Introduce AR characteristic polynomial:
 $$
 \phi(x) = 1 - \phi_1 x - \phi_2 x^2.
-$$  and accordingly its characteristic equation:
+$$  
+and accordingly its characteristic equation:
 $$
 \phi(x) =  1- \phi_1 x - \phi_2 x^2 = 0.
 $$
@@ -253,7 +264,8 @@ $$
     \gamma_0 &= \phi_1 \gamma_1 + \phi_2 \gamma_2 + \sigma^2\\
     &= \phi_1 \rho_1γ_0 + \phi_2 \rho_2γ_0 + \sigma^2 \\
 \end{aligned}
-$$thus 
+$$
+thus 
 $$
  γ_0 = \frac{\sigma^2}{1-\phi_1^2 - \phi_2^2}~.
 $$
@@ -321,7 +333,8 @@ $$
         \phi_p
     \end{bmatrix}.
 \end{aligned}
-$$  and can be denoted as $ϱ = \mathcal{R}\varPhi$.
+$$  
+and can be denoted as $ϱ = \mathcal{R}\varPhi$.
 
 ### 3.4 Solving AR Process *(AR(p) $\to$ MA(∞))*
 
@@ -334,7 +347,8 @@ $$
 Bringing stationary solution 
 $$
 Y_t = \mu + \sum _{j=0}^{\infty} \psi_j \epsilon_{t-j}.
-$$ to both sides ($Y_t$ and $Y_{t-1}$), we have:
+$$ 
+to both sides ($Y_t$ and $Y_{t-1}$), we have:
 $$
 \mu + \sum _{j=0}^{\infty} \psi_j \epsilon_{t-j} = \phi_0 + \phi_1 (\mu + \sum _{j=0}^{\infty} \psi_j \epsilon_{t-1-j}) + \epsilon_t.
 $$
@@ -371,12 +385,14 @@ $$
 
 $$
 Y_t = \phi_1 Y_{t-1} + \cdots + \phi_p Y_{t-p} + \epsilon_t - \theta_1 \epsilon_{t-1} - \cdots - \theta_q \epsilon_{t-q}.
-$$ where $\epsilon_t$ is a white noise process with mean 0 and variance $\sigma^2$.
+$$ 
+where $\epsilon_t$ is a white noise process with mean 0 and variance $\sigma^2$.
 
 It can be written as:
 $$
 \phi(B)Y_t = \theta_0 + \theta(B)\epsilon_t.
-$$ where $ B $ is the backshift operator.
+$$ 
+where $ B $ is the backshift operator.
 
 Here, we have AR characteristic polynomial $\phi(x)$ and MA characteristic polynomial $\theta(x)$:
 $$

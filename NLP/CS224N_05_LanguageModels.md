@@ -54,7 +54,4 @@ $$\begin{aligned}
 ### N-gram Model Python 实现
 
 ```python
-
-
-
 ## Window-based Neural Language Model

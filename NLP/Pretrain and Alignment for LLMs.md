@@ -46,9 +46,3 @@ Knowledge Distillation 在直觉上类似于一种逆向工程, 其实质上是�
 
 - *Self-Rewarding Language Models (arxiv.org/abs/2401.10020)* 提出 **self-alignment** 的方法. 具体而言, 给定一个没有 alignment 的 LLM 模型, 其通过向模型提问得到一系列不同的答案, 然后通过一些评分的instruction, 让 LLM 自己给每个答案打分, 并且再反过来用这些评分对模型进行 RL 的训练. 经过这样的迭代, 其模型的表现也有了一定的提升. 
   
-## 资料品质的重要性
-
-- *Textbooks Are All You Need (arxiv.org/abs/2306.11644)* 中发现教科书等高质量的资料确实会让模型的表现更好. 
-- *Rephrasing the Web (arxiv.org/abs/2401.16380)* 中会训练一个单独的 Rephraser 模型, 让其将网络上的资料进行改写, 使得其更容易被 LLM 理解.
-  ![Rephrasing the Web 中的资料品质对模型表现的影响](https://raw.githubusercontent.com/By-Xin/Blog-figs/main/20250404220841.png)
-- 在 *Scaling Data-Constrained Language Models (arxiv.org/abs/2305.16264)* 中指出, 在有限算力, 固定模型的情况下, 应该尽量让模型看更多不同的资料, 而不是重复看同样的资料. 

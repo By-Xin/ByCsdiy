@@ -46,15 +46,3 @@ Knowledge Distillation 在直觉上类似于一种逆向工程, 其实质上是�
 
 - *Self-Rewarding Language Models (arxiv.org/abs/2401.10020)* 提出 **self-alignment** 的方法. 具体而言, 给定一个没有 alignment 的 LLM 模型, 其通过向模型提问得到一系列不同的答案, 然后通过一些评分的instruction, 让 LLM 自己给每个答案打分, 并且再反过来用这些评分对模型进行 RL 的训练. 经过这样的迭代, 其模型的表现也有了一定的提升. 
   
-## Alignment 的极限
-
-- *The False Promise of Imitating Properietary LLMs (arxiv.org/abs/2305.15717)* 认为, 通过对齐的方式, 我们并不能得到一个完美的模型. 尽管其在表面上的输出上看起来‘像模像样’, 但其内容本身可能是错误的.
-- *Does Fine-Tuning LLMs on New Knowledge Encourage Hallucinations? (arxiv.org/abs/2405.05904)* 中分析了有哪些知识可以从alignment 中获得, 以及哪些知识是无法从 alignment 中获得的.
-  - 这里将 Base Model 对于一个问题按照模型的了解程度分为 Highly / Maybe /  Weakly  Known 和 Unknown 四种. 
-  - 文章发现, 当模型开始学习 Unknown 的知识时, 其在 Development Set (验证集) 上的表现会下降, 即开始出现 hallucination. 换言之, 当模型开始试图align Unknown 的知识时, 模型的表现会下降.
-  - 综合而言, 模型在学习 “Maybe Known” 的知识时, 对于模型的提升是最大的.
-
-- ***RL 是 Alignment 的好办法***: 在进行 RL 时, 我们并不是强制模型学习一个特定的答案, 而是根据人类的认知来奖惩模型的输出. 
-
-- 因此我们或许没有办法真正的在 alignment 中让模型学习到更多的新知识, 而是优化模型的输出.
-- 换言之, 因为 alignment 的过程是一个优化的过程. 当在 pretrain 时训练到了一些错误的知识时, 可能 alignment 很难真正的纠正这些错误的知识.

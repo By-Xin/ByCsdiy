@@ -57,6 +57,8 @@ $$
 
 ## Kalman Filtering 的数学模型
 
+### 模型假设
+
 事实上, 在 Kalman Filtering 中, 我们不需要对平稳性(stationarity) 进行假设. 因此我们可以让这个系统是一个时变的 (即 $f$ 和 $g$ 是时变的, 根据每个时刻 $n$ 来变化):
 $$
 \begin{aligned}
@@ -72,12 +74,111 @@ $$
 &\text{Observation:} \quad &Y_n &= G_n X_n + W_n
 \end{aligned}
 $$
-其中, $\{X_k\}\in\mathbb{R}^m$ 是系统的状态, $\{Y_k\}\in\mathbb{R}^d$ 是观测值. 二者的维度不同也是合理的. 并且往往我们会有 $m\gg d$. 对应地, $F_n\in\mathbb{R}^{m\times m}$ 和 $G_n\in\mathbb{R}^{d\times m}$ 分别是状态转移矩阵和观测矩阵. 进一步假设噪声 $V_n$ 和 $W_n$ 零均值的 White Noise.
+其中, $\{X_k\}\in\mathbb{R}^m$ 是系统的状态, $\{Y_k\}\in\mathbb{R}^d$ 是观测值. 二者的维度不同也是合理的. 并且往往我们会有 $m\gg d$. 对应地, $F_n\in\mathbb{R}^{m\times m}$ 和 $G_n\in\mathbb{R}^{d\times m}$ 分别是状态转移矩阵和观测矩阵. 
 
----
+进一步假设噪声 $V_n$ 和 $W_n$ 零均值的 White Noise:
+$$\begin{aligned}
+\mathbb{E}[V_n] = \mathbb{E}[W_n] = 0 \\
+\text{Cov}[V_n] = R_n \\
+\text{Cov}[W_n] = S_n\\
+{\text{Cov}}[V_n, W_n] = 0 
+\end{aligned}$$
+
+### 两步走策略
 
 对于 Kalman Filtering, 我们希望能够从观测值 $Y_n$ 中来推测系统的状态 $X_n$. 并且当我们如果已经完成了$n-1$时刻的估计, 我们希望 recursively (递归) 地来完成 $n$ 时刻的估计. 具体地, 如同两条腿走路一般, 我们可以分为两个步骤:
 1. **预测 (Prediction)**: 通过 $\{Y_1, Y_2, \ldots, Y_{n-1}\}$ 的观测来预测 $\{X_1, X_2, \ldots, X_{n}\}$的状态. 
-2. **矫正 (Correction)**: 当我们获得了 $Y_n$ 的观测后, 我们希望能够根据 $\{Y_1, Y_2, \ldots, Y_{n}\}$ 来更新我们对于 $\{X_1, X_2, \ldots, X_{n}\}$ 的估计.
+2. **矫正 (Correction / Update)**: 当我们获得了 $Y_n$ 的观测后, 我们希望能够根据 $\{Y_1, Y_2, \ldots, Y_{n-1}, Y_{n}\}$ 来更新我们对于 $\{X_1, X_2, \ldots, X_{n}\}$ 的估计.
 
-这种两步走的策略体现的是 ***Prediction-Correction*** 的思想. 而这种思想本质上就是**Tracking (跟踪)**
+这种两步走的策略体现的是 ***Prediction-Correction*** 的思想. 而这种思想本质上是 **Tracking (跟踪)**.
+
+
+---
+
+普遍统计学意义上讲, 若给定数据 $\{Y_1, Y_2, \ldots, Y_m\}$, 我们对 $X_n$ 在最小均方误差 (MSE) 准则下的估计就是条件期望:
+$$
+\hat X_{n|m} = \mathbb{E}[X_n | Y_1, Y_2, \ldots, Y_n] 
+$$
+这里引入了一个记号: $\hat X_{n|m}$ 表示我们已经掌握的数据是直到 $m$ 时刻的观测值 $\{Y_1, Y_2, \ldots, Y_m\}$ (这也和统计学中条件概率中“给定”的概念类似), 而想要估计的是 $n$ 时刻的$X_n$ 的值. 
+
+上述的两步走的策略也可以用这个记号来表示:
+$$
+\begin{aligned}
+\hat X_{n-1|n-1} \xrightarrow{\text{Prediction}} \hat X_{n|n-1}  \xrightarrow{\text{Correction}} \hat X_{n|n}
+\end{aligned}
+$$
+
+不过除非是在 Gaussian 分布的情况下, 这个条件期望是很难计算的. 因此我们需要一个更简单的估计方法. 在线性估计中, 引入OLS (最小二乘法) 的思想进行估计. 而 OLS 如果在线性代数的视角下会将其称之为一个投影:
+$$
+\hat X_{n|m} = \sum_{i=1}^m \hat\alpha_i Y_i = \text{Proj}_{Y_1,\cdots,Y_m} X_n
+$$
+进行OLS估计(即投影)显然是更方便的. 我们后续也会就此进行详细的讨论.
+
+>***关于投影的理解***
+>
+> 回顾在回归分析中, 我们想要估计模型 
+> $$Y= X\beta + \epsilon$$
+> 得到的估计是
+> $$
+>\hat\beta = (X^\top X)^{-1} X^\top Y
+> $$
+> 而对$Y$的估计是
+> $$
+> \hat Y = X\hat\beta = X(X^\top X)^{-1} X^\top Y \triangleq HY
+> $$
+> 我们有时会将 $H = X(X^\top X)^{-1} X^\top$ 称为“帽子矩阵” (Hat Matrix), 因为 它将 $Y$ 变换为 $\hat Y$. 不过更严谨的讲, 这是一个投影矩阵 (Projection Matrix), 它将 $Y$ 到了一个由 $X$ 张成的子空间上.
+> 
+> 因此在回归分析中, 我们认为这是 OLS 的结果. 若在线性代数的视角, 我们也可以写作:
+> $$
+> \hat Y = \text{Proj}_X Y
+> $$
+> 即
+> $\hat Y$ 是 $Y$ 在 $X$ 张成的子空间上的投影. 
+> 
+> 这里张成的空间(span) 可以理解为是 $X$ 的列空间 (Column Space). 而列空间是一个线性空间, 它是由 $X$ 的列向量线性组合而成的. 在现实意义中列向量就代表一个一个变量/特征, 我们相当于是把一个因变量 $Y$ (其背后可能有错综复杂的自变量关系) 投影到了 (只考虑目前这些) 自变量叫做 $X$ 所组成的线性空间上. 假设 $X$ 的列向量包括 $\mathrm{X}_1, \mathrm{X}_2, \ldots, \mathrm{X}_p$, 那么所谓的$X$的列空间/列向量张成的空间就是所有形如
+> $$
+> \beta_1 \mathrm{X}_1 + \beta_2 \mathrm{X}_2 + \cdots + \beta_p \mathrm{X}_p
+> $$ 
+>  的线性组合的集合, 其中 $\beta_1, \beta_2, \ldots, \beta_p$ 是任意实数. 这和我们回归分析的形式是完全一致的.
+
+
+
+
+---
+
+### STEP 1: 预测 (Prediction)
+
+在预测的过程中, 我们需要根据 $\{Y_1, Y_2, \ldots, Y_{n-1}\}$ 来预测 $X_n$, 沿用上面的记号, 我们可以表示为:
+$$
+\hat X_{n|n-1} = \text{Proj}_{Y_1,\cdots,Y_{n-1}} X_n 
+$$
+而根据我们之前的假设, 我们对于 $X_n$ 还有这样一个认知:
+$$
+X_n = F_n X_{n-1} + V_n
+$$
+因此我们可以将 $X_n$ 的预测值表示为:
+$$\begin{aligned}
+\hat X_{n|n-1} &= \text{Proj}_{Y_1,\cdots,Y_{n-1}} (F_n X_{n-1} + V_n) \\
+&= \text{Proj}_{Y_1,\cdots,Y_{n-1}} (F_n X_{n-1}) + \text{Proj}_{Y_1,\cdots,Y_{n-1}} (V_n) \quad (1) \\
+&= \text{Proj}_{Y_1,\cdots,Y_{n-1}} (F_n X_{n-1}) + 0  \quad (2)\\
+&= F_n ~\text{Proj}_{Y_1,\cdots,Y_{n-1}} (X_{n-1}) \quad (3)\\
+&= F_n ~\hat X_{n-1|n-1} \quad (4)\\
+\end{aligned}$$
+
+其中, (1) 是因为投影的线性性, 即 $\text{Proj}(a+b) = \text{Proj}(a) + \text{Proj}(b)$. (2) 是因为 $V_n$ 是一个$n$时刻的噪声, 而知道的观测值是 $\{Y_1, Y_2, \ldots, Y_{n-1}\}$. 未来的噪声和过去的观测是不相关的, 因此 $V_n$ 对于 $\{Y_1, Y_2, \ldots, Y_{n-1}\}$ 的投影是 0. (4) 是由于 $\hat X_{n-1|n-1} = \text{Proj}_{Y_1,\cdots,Y_{n-1}} (X_{n-1})$ 的定义. (3) 的证明较为复杂, 这里不做详细的展开, 但可以粗略地理解为投影的线性性 (这是符合直觉的). 
+
+> **注**: 若对投影这个概念和运算不熟悉, 可以粗略地类比条件期望的运算. 事实上, 条件期望是比投影更严格的概念. 条件期望在数学上相当于某种特殊的投影, 具有投影的所有性质. 但反之不必然成立.
+
+Anyways, 对于预测的结果, 我们可以得到:
+$$
+\boxed{\hat X_{n|n-1} = F_n \hat X_{n-1|n-1}}
+$$
+
+### STEP 2: 矫正 (Correction) / 更新 (Update)
+
+当我们新获得了 $Y_n$ 的观测后, 我们希望能够根据 $\{Y_1, Y_2, \ldots, Y_{n-1}, Y_{n}\}$ 来更新我们对于 $\{X_1, X_2, \ldots, X_{n}\}$ 的估计:
+$$\begin{aligned}
+\hat X_{n|n} &= \text{Proj}_{Y_1,\cdots,Y_{n}} X_n \\
+&= \text{Proj}_{Y_1,\cdots,Y_{n-1}} X_n + \text{Proj}_{\tilde Y_n} X_n 
+\end{aligned}$$
+其中, $\tilde Y_n = Y_n - \text{Proj}_{Y_1,\cdots,Y_{n-1}} Y_n = Y_n - (\hat\alpha_1 Y_1 + \hat\alpha_2 Y_2 + \cdots + \hat\alpha_{n-1} Y_{n-1})$. 上述操作背后有更深刻的线性代数原理, 不过有关键的两个 takeaways: (1) $\tilde Y_n$ 可以理解为 $Y_n$ 对 $Y_1, Y_2, \ldots, Y_{n-1}$ 进行线性回归后的残差, 其含义类似于 $Y_n$ 在去除了 $Y_1, Y_2, \ldots, Y_{n-1}$ 的所有资讯后独属于 $n$ 时刻的信息.(2) 只有利用独属于 $n$ 时刻独立的信息 $\tilde Y_n$, 上述的最后一个等号才是成立的.

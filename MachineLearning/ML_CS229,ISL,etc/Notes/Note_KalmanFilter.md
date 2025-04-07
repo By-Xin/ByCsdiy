@@ -79,9 +79,9 @@ $$
 进一步假设噪声 $V_n$ 和 $W_n$ 零均值的 White Noise:
 $$\begin{aligned}
 \mathbb{E}[V_n] = \mathbb{E}[W_n] = 0 \\
-\text{Cov}[V_n] = R_n \\
-\text{Cov}[W_n] = S_n\\
-{\text{Cov}}[V_n, W_n] = 0 
+\text{Cov}[V_n] \triangleq \Sigma_{V_n}\\
+\text{Cov}[W_n] \triangleq \Sigma_{W_n} \\
+{\text{Cov}}[V_n, W_m] = 0 \quad \forall n,m
 \end{aligned}$$
 
 ### 两步走策略
@@ -246,8 +246,77 @@ $$
 \end{aligned}
 $$
 
+### Kalman Gain 的选取
+
 在 Kalman Filtering 中也存在一个关于 **sensitivity** 和 **stability** 的 trade-off 问题:
 - 当 $G_n$ 较小时, 其整体的稳定性较好 (对于噪音的鲁棒性较强), 但是对于系统的变化的敏感度较低 (即对系统的变化反应较慢).
 - 当 $G_n$ 较大时, 其调整的幅度较大, 敏感度较高, 但是对于噪音的鲁棒性较差 (即对系统的变化反应较快).
 
-### Kalman Gain 的选取
+因此对于 $G_n$ 的选取也很重要. 经过推导, 我们可以得到最优的 $G_n$ 的选取:
+$$
+\boxed{G_n = H_n^\top \hat R_{n|n-1} (H_n \hat R_{n|n-1} H_n^\top + \Sigma_{W_n})^{-1}}
+$$
+其中 $\hat R_{n|n-1} = \text{Cov}[X_n - \hat X_{n|n-1}]$ 是预测误差 $X_n - \hat X_{n|n-1}$ 的协方差矩阵. 
+
+### 预测误差协方差 (Prediction Error Covariance) 的计算
+
+这里的一个问题是 $\hat R_{n|n-1}$ 的计算也并不是直接得到的. 但是根据 Kalman 的思想, 这个误差本身也可以看作是一个状态, 因此我们可以将其也通过两步走的策略进行递推:
+$$
+\begin{aligned}
+\hat R_{n|n-1} \longrightarrow \hat R_{n|n-1} \longrightarrow \hat R_{n|n}
+\end{aligned}
+$$
+
+具体地, 根据定义:
+$$\begin{aligned}
+\hat R_{n|n-1} &= \text{Cov}[X_n - \hat X_{n|n-1}] \\
+&= \mathbb{E}[(X_n - \hat X_{n|n-1})(X_n - \hat X_{n|n-1})^\top] \\
+&= \mathbb{E}(F_n X_{n-1} + V_n - \hat X_{n|n-1})(F_n X_{n-1} + V_n - \hat X_{n|n-1})^\top \quad (1)\\
+&= \mathbb{E}(F_n X_{n-1} + V_n  - F_n \hat X_{n-1|n-1})(F_n X_{n-1} + V_n - \hat X_{n|n-1})^\top \quad (2)\\
+&= \mathbb{E}[F_n (\underbrace{X_{n-1} - \hat X_{n-1|n-1}}_{\text{Filtering Error}})+ V_n] [F_n (X_{n-1} - \hat X_{n-1|n-1})+ V_n]^\top \\
+&= F_n \mathbb{E}[(X_{n-1} - \hat X_{n-1|n-1})(X_{n-1} - \hat X_{n-1|n-1})^\top] F_n^\top + \mathbb{E}(V_n V_n^\top) \quad (3)\\
+&= F_n \hat R_{n-1|n-1} F_n^\top + \Sigma_{V_n} \quad (4)\\
+\end{aligned}$$
+其中, (1) 是根据预测方程的定义 $X_n = F_n X_{n-1} + V_n$; (2) 是根据 STEP 1 Prediction 推导的结果 $\hat X_{n|n-1} = F_n \hat X_{n-1|n-1}$; (3) 是根据噪声的独立性; (4) 是根据协方差的定义: $\hat R_{n-1|n-1} = \text{Cov}[X_{n-1} - \hat X_{n-1|n-1}]$.
+
+最终我们可以得到:
+$$
+\text{(Prediction Error Covariance)} \quad
+\boxed{\hat R_{n|n-1} = F_n \hat R_{n-1|n-1} F_n^\top + \Sigma_{V_n}}
+$$
+
+### 滤波误差协方差 (Filtering Error Covariance) 的计算
+
+当我们给出了 Prediction Error Covariance 的计算后, 其计算还依赖于 $\hat R_{n-1|n-1}$ (flitering error covariance) 的计算. 下面给出该项的计算方法.
+
+$$\begin{aligned}
+\hat R_{n|n} &= \text{Cov}[X_n - \hat X_{n|n}] \\
+&= \mathbb{E}(X_n - \hat X_{n|n})(X_n - \hat X_{n|n})^\top \\
+&= \mathbb{E}[X_n - \hat X_{n|n-1} - G_n (Y_n - H_n \hat X_{n|n-1})][\sim ]^\top \quad (1)\\
+&= \mathbb{E}[X_n  - \hat X_{n|n-1} - G_n H_n (X_n - \hat X_{n|n-1}) - G_n W_n] [\sim ]^\top \quad (2)\\
+&= \mathbb{E}[ (I - G_n H_n) (X_n - \hat X_{n|n-1}) - G_n W_n] [\sim ]^\top \quad (3)\\
+&= (I - G_n H_n) \mathbb{E}[(X_n - \hat X_{n|n-1})(X_n - \hat X_{n|n-1})^\top] (I - G_n H_n)^\top+ G_n \Sigma_{W_n} G_n^\top \quad (4)\\
+&= (I - G_n H_n) \hat R_{n|n-1} (I - G_n H_n)^\top + G_n \Sigma_{W_n} G_n^\top \quad (5)\\
+\end{aligned}$$
+其中, $\sim$ 代表和前面的式子相同的部分, 这里不再重复书写; (1) 是根据 STEP 2 Correction 的定义: $\hat X_{n|n} = \hat X_{n|n-1} + G_n (Y_n - H_n \hat X_{n|n-1})$; (2) 是根据 Observation 方程的定义 $Y_n = H_n X_n + W_n$; (3) (4) 是单纯的线性代数运算; (5) 是根据协方差的定义: $\hat R_{n|n-1} = \text{Cov}[X_n - \hat X_{n|n-1}]$.
+
+因此我们可以得到:
+$$
+\text{(Filtering Error Covariance)} \quad
+\boxed{\hat R_{n|n} = (I - G_n H_n) \hat R_{n|n-1} (I - G_n H_n)^\top + G_n \Sigma_{W_n} G_n^\top}
+$$
+其中, $I$ 是单位矩阵.
+
+
+### Kalman Filtering 的总结
+
+综上, 我们就得到了 Kalman Filtering 的完整的公式:
+$$
+\begin{aligned}
+&\text{Prediction:} \quad \hat X_{n|n-1} = F_n \hat X_{n-1|n-1} \\
+&\text{Correction:} \quad \hat X_{n|n} =  \hat X_{n|n-1} + G_n (Y_n - H_n \hat X_{n|n-1}) \\
+&\text{Kalman Gain:} \quad G_n = H_n^\top \hat R_{n|n-1} (H_n \hat R_{n|n-1} H_n^\top + \Sigma_{W_n})^{-1} \\
+&\text{Prediction Error Covariance:} \quad \hat R_{n|n-1} = F_n \hat R_{n-1|n-1} F_n^\top + \Sigma_{V_n} \\
+&\text{Filtering Error Covariance:} \quad \hat R_{n|n} = (I - G_n H_n) \hat R_{n|n-1} (I - G_n H_n)^\top + G_n \Sigma_{W_n} G_n^\top
+\end{aligned}
+$$

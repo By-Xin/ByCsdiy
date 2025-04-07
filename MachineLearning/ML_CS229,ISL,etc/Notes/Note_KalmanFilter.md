@@ -63,7 +63,7 @@ $$
 $$
 \begin{aligned}
 &\text{State:} \quad &X_n &= f_n(X_{n-1}, V_n) \\
-&\text{Observation:} \quad &Y_n &= g_n(X_n, W_n)
+&\text{Observation:} \quad &Y_n &= h_n(X_n, W_n)
 \end{aligned}
 $$
 
@@ -71,10 +71,10 @@ $$
 $$
 \begin{aligned}
 &\text{State:} \quad &X_n &= F_n X_{n-1} + V_n \\
-&\text{Observation:} \quad &Y_n &= G_n X_n + W_n
+&\text{Observation:} \quad &Y_n &= H_n X_n + W_n
 \end{aligned}
 $$
-其中, $\{X_k\}\in\mathbb{R}^m$ 是系统的状态, $\{Y_k\}\in\mathbb{R}^d$ 是观测值. 二者的维度不同也是合理的. 并且往往我们会有 $m\gg d$. 对应地, $F_n\in\mathbb{R}^{m\times m}$ 和 $G_n\in\mathbb{R}^{d\times m}$ 分别是状态转移矩阵和观测矩阵. 
+其中, $\{X_k\}\in\mathbb{R}^m$ 是系统的状态, $\{Y_k\}\in\mathbb{R}^d$ 是观测值. 二者的维度不同也是合理的. 并且往往我们会有 $m\gg d$. 对应地, $F_n\in\mathbb{R}^{m\times m}$ 和 $H_n\in\mathbb{R}^{d\times m}$ 分别是状态转移矩阵和观测矩阵. 
 
 进一步假设噪声 $V_n$ 和 $W_n$ 零均值的 White Noise:
 $$\begin{aligned}
@@ -171,14 +171,83 @@ $$\begin{aligned}
 
 Anyways, 对于预测的结果, 我们可以得到:
 $$
-\boxed{\hat X_{n|n-1} = F_n \hat X_{n-1|n-1}}
+\text{(Prediction)}\quad \boxed{\hat X_{n|n-1} = F_n \hat X_{n-1|n-1}}
 $$
+这一项也被理解为是对于状态的先验估计 (Prior Estimate).
 
 ### STEP 2: 矫正 (Correction) / 更新 (Update)
 
 当我们新获得了 $Y_n$ 的观测后, 我们希望能够根据 $\{Y_1, Y_2, \ldots, Y_{n-1}, Y_{n}\}$ 来更新我们对于 $\{X_1, X_2, \ldots, X_{n}\}$ 的估计:
 $$\begin{aligned}
 \hat X_{n|n} &= \text{Proj}_{Y_1,\cdots,Y_{n}} X_n \\
-&= \text{Proj}_{Y_1,\cdots,Y_{n-1}} X_n + \text{Proj}_{\tilde Y_n} X_n 
+&= \text{Proj}_{Y_1,\cdots,Y_{n-1}} X_n + \text{Proj}_{\tilde Y_n} X_n\\
+&= \hat X_{n|n-1} + \text{Proj}_{\tilde Y_n} X_n 
+\quad (\dagger) 
 \end{aligned}$$
-其中, $\tilde Y_n = Y_n - \text{Proj}_{Y_1,\cdots,Y_{n-1}} Y_n = Y_n - (\hat\alpha_1 Y_1 + \hat\alpha_2 Y_2 + \cdots + \hat\alpha_{n-1} Y_{n-1})$. 上述操作背后有更深刻的线性代数原理, 不过有关键的两个 takeaways: (1) $\tilde Y_n$ 可以理解为 $Y_n$ 对 $Y_1, Y_2, \ldots, Y_{n-1}$ 进行线性回归后的残差, 其含义类似于 $Y_n$ 在去除了 $Y_1, Y_2, \ldots, Y_{n-1}$ 的所有资讯后独属于 $n$ 时刻的信息.(2) 只有利用独属于 $n$ 时刻独立的信息 $\tilde Y_n$, 上述的最后一个等号才是成立的.
+其中, 
+$$\begin{aligned}
+\tilde Y_n &= Y_n - \text{Proj}_{Y_1,\cdots,Y_{n-1}} Y_n 
+\end{aligned}$$
+
+上述操作背后有更复杂的线性代数原理 (正交补空间) 不作展开, 不过有两个关键的 takeaways:
+  - $\text{Proj}_{Y_1,\cdots,Y_{n-1}} Y_n$ 可以理解为 $Y_n$ 对 $Y_1, Y_2, \ldots, Y_{n-1}$ 进行 OLS 线性回归. 因此 $Y_n-\text{Proj}_{Y_1,\cdots,Y_{n-1}} Y_n$ 相当于线性回归后的残差, 其含义类似于 $Y_n$ 在去除了 $Y_1, Y_2, \ldots, Y_{n-1}$ 的所有资讯后独属于 $n$ 时刻的信息.
+  - 只有利用独属于 $n$ 时刻独立的信息 $\tilde Y_n$, 上述的最后一个等号才是成立的.
+
+$\diamond$
+
+不论具体形式如何, 对于 ($\dagger$) 式中的 $\text{Proj}_{\tilde Y_n} X_n$, 我们总可以类比 ($X_n$ 关于 $\tilde Y_n$的) 线性回归的模式, 将其表示为 $\tilde Y_n$ 的某种线性组合, 用矩阵可以表示为:
+$$
+\text{Proj}_{\tilde Y_n} X_n = G_n \tilde Y_n
+$$
+其中 $G_n$ 是某个投影矩阵, 其具体的形式我们后续会进行讨论. 因此目前我们可以将 ($\dagger$) 式进一步推导为:
+$$\begin{aligned}
+\hat X_{n|n} &=  \hat X_{n|n-1} + G_n \tilde Y_n \quad (\dagger_2) \\
+\end{aligned}$$
+
+
+$\diamond$
+
+下面具体计算一下 $\tilde Y_n$:
+$$\begin{aligned}
+\text{Proj}_{Y_1,\cdots,Y_{n-1}} Y_n &= \text{Proj}_{Y_1,\cdots,Y_{n-1}} (H_n X_n + W_n) \quad (1)\\
+&= H_n \text{Proj}_{Y_1,\cdots,Y_{n-1}} X_n + \text{Proj}_{Y_1,\cdots,Y_{n-1}} W_n \quad (2)\\
+&= H_n \text{Proj}_{Y_1,\cdots,Y_{n-1}} X_n  + 0 \quad (3)\\
+&= H_n \hat X_{n|n-1} \quad (4)\\
+\end{aligned}$$
+其中 (1) 是由 Observation 方程的定义, $Y_n = H_n X_n + W_n$;  (2) 是因为投影的线性性; (3) 中 $\text{Proj}_{Y_1,\cdots,Y_{n-1}} W_n=0$ 同样是因为$n$时刻的噪声 $W_n$ 和过去的观测值是独立的; (4) 是也是由 STEP 1 中的定义: $\hat X_{n|n-1} = \text{Proj}_{Y_1,\cdots,Y_{n-1}} X_n$ 得到的.
+
+故我们可以得到:
+$$\begin{aligned}
+\tilde Y_n &= Y_n - \text{Proj}_{Y_1,\cdots,Y_{n-1}} Y_n \\
+&= Y_n - H_n \hat X_{n|n-1} 
+\end{aligned}$$
+
+$\diamond$
+
+在算得 $\tilde Y_n$ 的具体形式后, 我们可以将其代入 ($\dagger_2$) 式中:
+$$\begin{aligned}\text{(Correction)} \quad
+\boxed{
+\hat X_{n|n} =  \hat X_{n|n-1} + G_n (Y_n - H_n \hat X_{n|n-1})}
+\end{aligned}$$
+
+这是 Kalman Filtering 的核心公式.  这一步作为 Kalman Filtering 的更新/矫正步骤, 其核心思想是: **我们通过对 $Y_n$ 的观测来更新我们对于 $X_n$ 的估计.** 
+- $H_n \hat X_{n|n-1}$ 相当于当我们只有 $n-1$ 时刻的信息时, 我们用对 $n$ 时刻系统状态的估计 $\hat X_{n|n-1}$ 来预测 $n$ 时刻观测的值.
+- ${Y_n - H_n \hat X_{n|n-1}}$ 则反映了当我们真的有了 $Y_n$ 的观测后, 我们刚刚的预测相对于真实观测的偏差. 若这个值的绝对值很大 (偏差很大), 则说明我们本身的预测是有问题的, 我们对于 $\hat X_{n|n-1}$ 的估计是有问题的, 需要大幅矫正更新. 这一项也被称为 residual / error / **innovation** (新息). 由于 innovation 代表了新观测中包含的"新信息"，即不能从先前估计中预测出的部分. 因此在理想情况下, 若 innovation 是一个 white noise, 则说明这个滤波器是良好运行的, 新的观测和我们的预测是完全一致的.
+- 因此我们就根据我们的偏差大小来更新我们的估计 $\hat X_{n|n-1}$, 而 $G_n$ 则相当于调整我们更新的幅度 (在 Filtering 中, $G_n$ 也被称为 **Kalman Gain**. 其也类似于机器学习领域中的学习率). 因此 $G_n (Y_n - H_n \hat X_{n|n-1})$ 就是我们对于 $\hat X_{n|n-1}$ 的更新量.
+
+---
+
+上述的 Prediction 和 Correction 的过程就是 Kalman Filtering 最核心的思想. 
+$$
+\text{Kalman Filtering} \quad
+\begin{aligned}
+&\text{Prediction:} \quad \hat X_{n|n-1} = F_n \hat X_{n-1|n-1} \\
+&\text{Correction:} \quad \hat X_{n|n} =  \hat X_{n|n-1} + G_n (Y_n - H_n \hat X_{n|n-1})
+\end{aligned}
+$$
+
+在 Kalman Filtering 中也存在一个关于 **sensitivity** 和 **stability** 的 trade-off 问题:
+- 当 $G_n$ 较小时, 其整体的稳定性较好 (对于噪音的鲁棒性较强), 但是对于系统的变化的敏感度较低 (即对系统的变化反应较慢).
+- 当 $G_n$ 较大时, 其调整的幅度较大, 敏感度较高, 但是对于噪音的鲁棒性较差 (即对系统的变化反应较快).
+
+### Kalman Gain 的选取
